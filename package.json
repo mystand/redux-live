@@ -1,0 +1,25 @@
+{
+  "name": "mystand-redux-requests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexandr Promakh",
+  "license": "",
+  "dependencies": {
+    "ramda": "^0.23.0",
+    "core-decorators": "^0.15.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.14.1",
+    "eslint-config-mystand": "git+https://bitbucket.org/mystand/eslint-config-mystand.git#ce699dd",
+    "eslint-config-mystand-flow": "git+https://bitbucket.org/mystand/eslint-config-mystand-flow.git#aec74db",
+    "eslint-config-mystand-react": "git+https://bitbucket.org/mystand/eslint-config-mystand-react.git#9de40eb"
+  },
+  "peerDependencies": {
+    "react": "^15.4.2",
+    "react-redux": "^5.0.2"
+  }
+}
