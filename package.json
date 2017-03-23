@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel -d lib/ src/"
+    "build": "babel -d lib/ src/",
+    "flow": "flow"
   },
   "author": "Alexandr Promakh",
   "license": "",
@@ -24,10 +25,13 @@
     "eslint": "^3.14.1",
     "eslint-config-mystand": "git+https://bitbucket.org/mystand/eslint-config-mystand.git#ce699dd",
     "eslint-config-mystand-flow": "git+https://bitbucket.org/mystand/eslint-config-mystand-flow.git#aec74db",
-    "eslint-config-mystand-react": "git+https://bitbucket.org/mystand/eslint-config-mystand-react.git#9de40eb"
+    "eslint-config-mystand-react": "git+https://bitbucket.org/mystand/eslint-config-mystand-react.git#9de40eb",
+    "flow-bin": "^0.42.0"
   },
   "peerDependencies": {
     "react": "^15.4.2",
-    "react-redux": "^5.0.2"
+    "react-redux": "^5.0.2",
+    "redux": "^3.5.2",
+    "redux-saga": "^0.14.3"
   }
 }

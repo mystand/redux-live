@@ -1,10 +1,11 @@
 // @flow
+import type { ConnectedComponent } from 'react-redux'
 import React from 'react'
 import R from 'ramda'
 import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
 
-import type { HashType } from '../types'
+import type { HashType, ActionType } from '../types'
 import type { RequestStartActionType } from '../actions/requestsActions'
 import * as requestsActions from '../actions/requestsActions'
 import guid from '../lib/guid'
@@ -14,16 +15,16 @@ export type SubscribeOptionsType = {
   params: HashType
 }
 
-export type RequestDeclarationItemType<S, A> = {
+export type RequestDeclarationItemType<S> = {
   key: string,
-  cacheKey?: (props: HashType, state: S) => string,
-  action: (key: string, props: HashType, state: S) => A
+  cacheKey?: (props: HashType, state: ?S) => string,
+  action: (key: string, props: HashType, state: ?S) => ActionType
 }
 
-export type RequestsDeclarationType<S, A> = Array<RequestDeclarationItemType<S, A>>
+export type RequestsDeclarationType<S> = Array<RequestDeclarationItemType<S>>
 
-export default function connectWithRequests<S, A>(
-  requestsDeclaration: RequestsDeclarationType<S, A>,
+export default function connectWithRequests<S>(
+  requestsDeclaration: RequestsDeclarationType<S>,
   mapStateToProps?: Function,
   mapDispatchToProps?: Function,
   mergeProps?: Function,
@@ -35,6 +36,7 @@ export default function connectWithRequests<S, A>(
     return R.compose(
       withRequests(requestsDeclaration),
 
+      // $FlowFixMe
       connect((state, props) => {
         const result = mapStateToProps !== undefined ? mapStateToProps(state, props) : {}
         requestsDeclaration.forEach((request) => {
@@ -46,20 +48,14 @@ export default function connectWithRequests<S, A>(
   }
 }
 
-declare class ConnectComponentType<S> extends React$Component<any, any, any> {
-  displayName: string,
-  getWrappedInstance(): React$Element<any>,
-  store: S
-}
-
-function withRequests<S, A>(requestsDeclaration: RequestsDeclarationType<S, A>) {
-  return (Component: ConnectComponentType<S>) => {
+function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
+  return (Component: Class<ConnectedComponent<any, any, any, S>>) => {
     return class WithRequests extends React.Component {
-      connectComponent: ConnectComponentType<S>
+      connectComponent: ConnectedComponent<any, any, any, S>
       displayName: string
 
       _requestsPrefix: string
-      _requestsCacheKeys: HashType
+      _requestsCacheKeys: { [key: string]: ?string }
       _additionalKeys: Array<string>
 
       constructor() {
@@ -76,6 +72,7 @@ function withRequests<S, A>(requestsDeclaration: RequestsDeclarationType<S, A>) 
         if (wrappedComponent == null) {
           // wrapped component is function
           const oldWillUpdate = this.connectComponent.componentWillUpdate
+          // $FlowIgnore
           this.connectComponent.componentWillUpdate = (nextProps, nextState) => {
             this._performRequestsIfNeeded(nextProps, null)
             if (oldWillUpdate !== undefined) {
@@ -87,17 +84,21 @@ function withRequests<S, A>(requestsDeclaration: RequestsDeclarationType<S, A>) 
         } else {
           // wrapped component is class
           const oldWillUpdate = wrappedComponent.componentWillUpdate
+          // $FlowIgnore
           wrappedComponent.componentWillUpdate = (nextProps, nextState) => {
             this._performRequestsIfNeeded(nextProps, nextState)
             if (oldWillUpdate !== undefined) {
               oldWillUpdate.call(wrappedComponent, nextProps, nextState)
             }
           }
-          this._performRequestsIfNeeded(this.props, wrappedComponent.state)
+          // $FlowIgnore
+          const state: S = wrappedComponent.state
+          this._performRequestsIfNeeded(this.props, state)
         }
       }
 
       componentWillUnmount() {
+        // $FlowIgnore
         const { dispatch } = this.connectComponent.store
 
         const keysForClear = [
@@ -110,7 +111,8 @@ function withRequests<S, A>(requestsDeclaration: RequestsDeclarationType<S, A>) 
         })
       }
 
-      _performRequestsIfNeeded<S>(props: HashType, state: ?S) {
+      _performRequestsIfNeeded(props: HashType, state: ?S) {
+        // $FlowIgnore
         const { dispatch } = this.connectComponent.store
 
         requestsDeclaration.forEach((request) => {
@@ -133,6 +135,7 @@ function withRequests<S, A>(requestsDeclaration: RequestsDeclarationType<S, A>) 
 
       @autobind
       dispatchRequest(action: RequestStartActionType) {
+        // $FlowIgnore
         const { dispatch } = this.connectComponent.store
 
         const fullKey = `${this._requestsPrefix}-${action.requestKey}`

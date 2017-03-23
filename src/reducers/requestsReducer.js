@@ -1,7 +1,7 @@
 // @flow
 import R from 'ramda'
 
-import type { HashType } from '../types'
+import type { HashType, ActionType } from '../types'
 import {
   REQUEST_START,
   REQUEST_SUCCESS,
@@ -31,7 +31,7 @@ function mergeData(oldData: any, newData: any, type: OptionsMergeType = 'replace
   }
 }
 
-export default function<A> (state: HashType = defaultState, action: A) {
+export default function<A: ActionType> (state: HashType = defaultState, action: A) {
   const { type, requestKey } = action
 
   switch (type) {
