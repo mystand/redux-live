@@ -11,8 +11,9 @@
   "author": "Alexandr Promakh",
   "license": "",
   "dependencies": {
-    "ramda": "^0.23.0",
-    "core-decorators": "^0.15.0"
+    "core-decorators": "^0.15.0",
+    "pluralize": "^4.0.0",
+    "ramda": "^0.23.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",

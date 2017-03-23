@@ -38,7 +38,7 @@ class Subscription {
   static _onMessage(e: MessageEvent) {
     let message
     try {
-      // $FlowFixMe
+      // $FlowToDo
       message = JSON.parse(e.data)
     } catch (e) {
       console.error(e)
