@@ -23,12 +23,13 @@ class Subscription {
   _model: string
   _params: HashType
 
-  static connect(url, protocols) {
+  static connect(url, protocol) {
     Subscription._disconnectIfOpen()
+    _webSocket = new WebSocket(url, protocol)
+    _webSocket.onmessage = Subscription._onMessage
+    
     // const authToken = localStorage.getItem(AUTH_TOKEN_KEY)
     // if (authToken != null) {
-      _webSocket = new WebSocket(url, protocols)
-      _webSocket.onmessage = Subscription._onMessage
     // } else {
     //   console.error('Not authorized for subscription')
     // }

@@ -1,0 +1,14 @@
+[ignore]
+;.*/node_modules/
+.*/dist/
+
+[include]
+;mystand-redux-requests
+
+[libs]
+
+[options]
+;all=true
+;module.system.node.resolve_dirname=node_modules
+suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe
+esproposal.decorators=ignore

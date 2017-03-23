@@ -4,7 +4,7 @@ import R from 'ramda'
 import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
 
-import type { ComponentType, HashType } from '../types'
+import type { HashType } from '../types'
 import type { RequestStartActionType } from '../actions/requestsActions'
 import * as requestsActions from '../actions/requestsActions'
 import guid from '../lib/guid'
@@ -20,21 +20,21 @@ export type RequestDeclarationItemType<S, A> = {
   action: (key: string, props: HashType, state: S) => A
 }
 
-export type RequestsDeclarationType = Array<RequestDeclarationItemType>
+export type RequestsDeclarationType<S, A> = Array<RequestDeclarationItemType<S, A>>
 
-export default function connectWithRequests(
+export default function connectWithRequests<S, A>(
+  requestsDeclaration: RequestsDeclarationType<S, A>,
   mapStateToProps?: Function,
   mapDispatchToProps?: Function,
   mergeProps?: Function,
   options?: HashType = {}
 ) {
-  return (Component: ComponentType) => {
-    const requestsDeclaration = Component.requests || []
+  return (Component: React$Element<any>) => {
+    // const requestsDeclaration: RequestsDeclarationType = Component.requests || []
 
     return R.compose(
       withRequests(requestsDeclaration),
 
-      // $FlowFixMe
       connect((state, props) => {
         const result = mapStateToProps !== undefined ? mapStateToProps(state, props) : {}
         requestsDeclaration.forEach((request) => {
@@ -46,10 +46,16 @@ export default function connectWithRequests(
   }
 }
 
-function withRequests(requestsDeclaration: RequestsDeclarationType) {
-  return (Component: ComponentType) => {
+declare class ConnectComponentType<S> extends React$Component<any, any, any> {
+  displayName: string,
+  getWrappedInstance(): React$Element<any>,
+  store: S
+}
+
+function withRequests<S, A>(requestsDeclaration: RequestsDeclarationType<S, A>) {
+  return (Component: ConnectComponentType<S>) => {
     return class WithRequests extends React.Component {
-      connectComponent: ComponentType
+      connectComponent: ConnectComponentType<S>
       displayName: string
 
       _requestsPrefix: string

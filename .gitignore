@@ -3,12 +3,11 @@
 /flow-typed
 
 # bin
-/dist
+#/lib
 
 # Editors configs
 /.idea/dbnavigator.xml
 /.idea/workspace.xml
-/.idea/dictionaries
 
 # system and other files
 .DS_Store
