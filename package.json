@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel -d lib/ src/",
-    "flow": "flow",
-    "postinstall": "npm run build"
+    "flow": "flow"
   },
   "author": "Alexandr Promakh",
   "license": "",
