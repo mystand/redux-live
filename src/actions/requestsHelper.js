@@ -37,3 +37,30 @@ export function generateCreate(dataType: string) {
     requestKey, dataType, params, options
   })
 }
+
+type UpdateParamsType = {
+  [key: string]: any,
+  record: HashType
+}
+
+export function generateUpdate(dataType: string) {
+  return (requestKey: string, params: UpdateParamsType, options?: OptionsType) => ({
+    type: REQUEST_START,
+    method: 'update',
+    requestKey, dataType, params, options
+  })
+}
+
+type DestroyParamsType = {
+  [key: string]: any,
+  id: number | string
+}
+
+export function generateDestroy(dataType: string) {
+  return (requestKey: string, params: DestroyParamsType, options?: OptionsType) => ({
+    type: REQUEST_START,
+    method: 'destroy',
+    requestKey, dataType, params, options
+  })
+}
+

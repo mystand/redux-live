@@ -3,7 +3,7 @@
 /flow-typed
 
 # bin
-#/lib
+/lib
 
 # Editors configs
 /.idea/dbnavigator.xml

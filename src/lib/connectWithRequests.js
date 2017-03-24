@@ -11,6 +11,13 @@ import type { RequestStartActionType } from '../actions/requestsActions'
 import * as requestsActions from '../actions/requestsActions'
 import guid from '../lib/guid'
 
+export type RequestResultType<T> = {
+  data: T,
+  failureError: any,
+  dataError: any,
+  loading: boolean
+}
+
 export type SubscribeOptionsType = {
   model: string,
   params: HashType
@@ -38,7 +45,7 @@ export default function connectWithRequests<S>(
     return R.compose(
       withRequests(requestsDeclaration),
 
-      // $FlowToDo
+      // $FlowIgnore todo
       connect((state, props) => {
         const result = mapStateToProps !== undefined ? mapStateToProps(state, props) : {}
         requestsDeclaration.forEach((request) => {
@@ -93,7 +100,7 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
               oldWillUpdate.call(wrappedComponent, nextProps, nextState)
             }
           }
-          // $FlowBug
+          // $FlowIgnore flow bug
           const state: S = wrappedComponent.state
           this._performRequestsIfNeeded(this.props, state)
         }

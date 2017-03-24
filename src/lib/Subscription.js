@@ -27,18 +27,12 @@ class Subscription {
     Subscription._disconnectIfOpen()
     _webSocket = new WebSocket(url, protocol)
     _webSocket.onmessage = Subscription._onMessage
-    
-    // const authToken = localStorage.getItem(AUTH_TOKEN_KEY)
-    // if (authToken != null) {
-    // } else {
-    //   console.error('Not authorized for subscription')
-    // }
   }
 
   static _onMessage(e: MessageEvent) {
     let message
     try {
-      // $FlowToDo
+      // $FlowIgnore todo
       message = JSON.parse(e.data)
     } catch (e) {
       console.error(e)

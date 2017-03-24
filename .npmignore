@@ -3,3 +3,6 @@
 .eslintignore
 .eslintrc
 .babelrc
+
+node_modules
+flow-typed
