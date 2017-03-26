@@ -1,4 +1,6 @@
 // @flow
+require('./lib/ramdaExtension') 
+
 import * as actionsHelper from './actions/requestsHelper'
 import * as actions from './actions/requestsActions'
 
