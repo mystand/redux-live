@@ -91,7 +91,7 @@ export default function<A: ActionType> (state: HashType = defaultState, action: 
       let fn = null
 
       if (sAction === 'create') fn = (data: []) => [...data, object]
-      if (sAction === 'destroy') fn = (data: []) => data.filter(x => x.id == object.id)
+      if (sAction === 'destroy') fn = (data: []) => data.filter(x => x.id != object.id)
       if (sAction === 'update') fn = (data: []) => R.replaceBy(x => x.id == object.id, object, data)
 
       if (fn != null) return R.updatePath([requestKey, 'data'], fn, state)
