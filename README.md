@@ -154,3 +154,22 @@ export default connectWithRequests([
   }
 ])(ProjectIssuePage)
 ```
+
+#### Subscriptions 
+
+You can white condition using syntax provided by [JEXT](https://www.npmjs.com/package/jexl) 
+
+```flow js
+export default connectWithRequests([
+  {
+    key: 'issues',
+    cacheKey: (props: PropsType) => props.params.projectId,
+    action: (props: PropsType) => issuesActions.index(null, { projectId: props.params.projectId }, {
+      subscribe: {
+        model: 'Issue',
+        condition: `o.project_id == ${props.params.projectId}` // see https://www.npmjs.com/package/jexl
+      }
+    })
+  }
+])(ProjectSupportPage)
+```
