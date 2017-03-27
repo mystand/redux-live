@@ -26,8 +26,6 @@ export default function connectWithRequests<S>(
   options?: HashType = {}
 ) {
   return (Component: React$Element<any>) => {
-    // const requestsDeclaration: RequestsDeclarationType = Component.requests || []
-
     return R.compose(
       withRequests(requestsDeclaration),
 

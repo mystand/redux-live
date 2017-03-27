@@ -29,9 +29,10 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
 
     if (options != null && options.subscribe != null) {
       const { model, condition } = options.subscribe
+      const { comparator } = options
 
       subscriptions[requestKey] = new Subscription(model, condition, (sAction, object) => {
-        dispatch(requestsActions.subscriptionAction(requestKey, sAction, object))
+        dispatch(requestsActions.subscriptionAction(requestKey, sAction, object, { comparator }))
       })
       subscriptions[requestKey].open()
     }
@@ -39,6 +40,7 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
 
   function clearSubscriptionIfNeeded(action) {
     const { requestKey } = action
+    subscriptions[requestKey].close()
     delete subscriptions[requestKey]
   }
 
