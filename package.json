@@ -4,8 +4,8 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel -d lib/ src/",
+    "test": "jest",
     "flow": "flow"
   },
   "author": "Alexandr Promakh",
@@ -24,10 +24,11 @@
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-3": "^6.22.0",
     "eslint": "^3.14.1",
-    "eslint-config-mystand": "git+https://bitbucket.org/mystand/eslint-config-mystand.git#ce699dd",
+    "eslint-config-mystand": "git+https://bitbucket.org/mystand/eslint-config-mystand.git#13bb7d2",
     "eslint-config-mystand-flow": "git+https://bitbucket.org/mystand/eslint-config-mystand-flow.git#aec74db",
     "eslint-config-mystand-react": "git+https://bitbucket.org/mystand/eslint-config-mystand-react.git#9de40eb",
-    "flow-bin": "^0.42.0"
+    "flow-bin": "^0.42.0",
+    "jest": "^19.0.2"
   },
   "peerDependencies": {
     "react": "^15.4.2",

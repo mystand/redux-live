@@ -49,9 +49,9 @@ import { requestsActionsHelper } from 'mystand-redux-requests'
 
 const { generateIndex, generateGet, generateCreate } = requestsActionsHelper
 
-export const index = generateIndex('acts') // calls Api.acts.index method
-export const get = generateGet('acts') // calls Api.acts.get method
-export const create = generateCreate('acts') // calls Api.acts.create method
+export const index = generateIndex('acts') // calls Api.acts.index method(params)
+export const get = generateGet('acts') // calls Api.acts.get method(params)
+export const create = generateCreate('acts') // calls Api.acts.create method(params)
 ```
 
 #### Connect to component
@@ -128,7 +128,8 @@ export default R.compose(
  ```flow js
  import { requestsActions } from 'mystand-redux-requests'
  
- // this methos calls Api.project.dashboard
+ // this methos calls Api.project.dashboard(params)
+ // params will be same as params from action
  export const dashboard = (requestKey: string, params?: HashType, options?: OptionsType) => ({
    type: requestsActions.REQUEST_START,
    method: 'dashboard',

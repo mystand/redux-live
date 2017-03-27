@@ -11,15 +11,22 @@ import {
   REQUEST_SUBSCRIPTION_ACTION
 } from '../actions/requestsActions'
 
-const defaultState = {}
+export type RequestResultType<T> = {
+  data: T,
+  failureError: any,
+  dataError: any,
+  loading: boolean
+}
+export type RequestsReducerStateType = { [key: string]: RequestResultType<any> }
 
 export type OptionsMergeType = 'replace' | 'append'
 export type OptionsSubscribeType = { model: string, params: HashType }
-
 export type OptionsType = {
   merge?: OptionsMergeType,
   subscribe?: OptionsSubscribeType
 }
+
+const defaultState: RequestsReducerStateType = {}
 
 function mergeData(oldData: any, newData: any, type: OptionsMergeType = 'replace') {
   if (type === 'replace') return newData
@@ -31,7 +38,15 @@ function mergeData(oldData: any, newData: any, type: OptionsMergeType = 'replace
   }
 }
 
-export default function<A: ActionType> (state: HashType = defaultState, action: A) {
+const updatePath = R.curry((path, fn, object) => {
+  const value = fn(R.path(path, object))
+  return R.assocPath(path, value, object)
+})
+
+export default function<A: ActionType> (
+  state: RequestsReducerStateType = defaultState,
+  action: A
+): RequestsReducerStateType {
   const { type, requestKey } = action
 
   switch (type) {
@@ -92,9 +107,16 @@ export default function<A: ActionType> (state: HashType = defaultState, action: 
 
       if (sAction === 'create') fn = (data: []) => [...data, object]
       if (sAction === 'destroy') fn = (data: []) => data.filter(x => x.id != object.id)
-      if (sAction === 'update') fn = (data: []) => R.replaceBy(x => x.id == object.id, object, data)
+      if (sAction === 'update') {
+        fn = (data: []) => {
+          const index = R.findIndex(x => x.id == object.id, data)
+          if (index === -1) return [...data, object]
+          return R.update(index, object, data)
+        }
+      }
 
-      if (fn != null) return R.updatePath([requestKey, 'data'], fn, state)
+      if (fn != null) return updatePath([requestKey, 'data'], fn, state)
+      console.warn(`unrecognized subscribe action '${sAction}'`)
       return state
     }
 

@@ -11,13 +11,6 @@ import type { RequestStartActionType } from '../actions/requestsActions'
 import * as requestsActions from '../actions/requestsActions'
 import guid from '../lib/guid'
 
-export type RequestResultType<T> = {
-  data: T,
-  failureError: any,
-  dataError: any,
-  loading: boolean
-}
-
 export type SubscribeOptionsType = {
   model: string,
   params: HashType

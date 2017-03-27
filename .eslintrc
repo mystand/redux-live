@@ -18,7 +18,9 @@
     "module": true,
     "__dirname": true,
     "Generator": true,
-    "SyntheticInputEvent": true
+    "SyntheticInputEvent": true,
+    "test": true,
+    "expect": true
   },
   "parser": "babel-eslint",
   "rules": {
