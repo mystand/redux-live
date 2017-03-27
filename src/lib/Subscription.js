@@ -1,18 +1,16 @@
 // @flow
-import type { HashType } from '../types'
-// import { AUTH_TOKEN_KEY } from 'constants/base'
 import guid from '../lib/guid'
 
 type ActionType = 'create' | 'update' | 'destroy'
 type CallbackType = (action: ActionType, object: any) => void
 
 const Command = {
-  subscribe: (model: string, params: HashType, guid: string) => JSON.stringify({
+  subscribe: (guid: string, model: string, condition: ?string) => JSON.stringify({
     command: 'subscribe',
-    args: { model, params, guid }
+    args: { model, condition, guid }
   }),
 
-  unSubscribe: (guid: string) => JSON.stringify({ command: 'subscribe', args: { guid } })
+  unSubscribe: (guid: string) => JSON.stringify({ command: 'unSubscribe', args: { guid } })
 }
 
 let _webSocket: ?WebSocket
@@ -21,7 +19,7 @@ const _callbacks: { [key: string]: CallbackType } = {}
 class Subscription {
   _guid: string
   _model: string
-  _params: HashType
+  _condition: ?string
 
   static connect(url, protocol) {
     Subscription._disconnectIfOpen()
@@ -51,16 +49,16 @@ class Subscription {
     }
   }
 
-  constructor(model: string, params: HashType, callback: CallbackType) {
+  constructor(model: string, condition: ?string, callback: CallbackType) {
     this._guid = guid()
     this._model = model
-    this._params = params
+    this._condition = condition
     _callbacks[this._guid] = callback
   }
 
   open() {
     if (_webSocket != null) {
-      _webSocket.send(Command.subscribe(this._model, this._params, this._guid))
+      _webSocket.send(Command.subscribe(this._guid, this._model, this._condition))
     } else {
       console.error('Connection not established')
     }

@@ -1,14 +1,17 @@
 // @flow
 import type { HashType } from '../types'
 
-import type { OptionsType } from '../reducers/requestsReducer'
+import type { RequestActionOptionsType } from '../actions/requestsActions'
 import { REQUEST_START } from './requestsActions'
 
 export function generateIndex(dataType: string) {
-  return (requestKey: string, params?: HashType, options?: OptionsType) => ({
+  return (requestKey: string, params?: HashType, options?: RequestActionOptionsType) => ({
     type: REQUEST_START,
     method: 'index',
-    requestKey, dataType, params, options
+    requestKey,
+    dataType,
+    params,
+    options
   })
 }
 
@@ -18,10 +21,13 @@ type GetParamsType = {
 }
 
 export function generateGet(dataType: string) {
-  return (requestKey: string, params: GetParamsType, options?: OptionsType) => ({
+  return (requestKey: string, params: GetParamsType, options?: RequestActionOptionsType) => ({
     type: REQUEST_START,
     method: 'get',
-    requestKey, dataType, params, options
+    requestKey,
+    dataType,
+    params,
+    options
   })
 }
 
@@ -31,10 +37,13 @@ type CreateParamsType = {
 }
 
 export function generateCreate(dataType: string) {
-  return (requestKey: string, params: CreateParamsType, options?: OptionsType) => ({
+  return (requestKey: string, params: CreateParamsType, options?: RequestActionOptionsType) => ({
     type: REQUEST_START,
     method: 'create',
-    requestKey, dataType, params, options
+    requestKey,
+    dataType,
+    params,
+    options
   })
 }
 
@@ -44,10 +53,13 @@ type UpdateParamsType = {
 }
 
 export function generateUpdate(dataType: string) {
-  return (requestKey: string, params: UpdateParamsType, options?: OptionsType) => ({
+  return (requestKey: string, params: UpdateParamsType, options?: RequestActionOptionsType) => ({
     type: REQUEST_START,
     method: 'update',
-    requestKey, dataType, params, options
+    requestKey,
+    dataType,
+    params,
+    options
   })
 }
 
@@ -57,10 +69,12 @@ type DestroyParamsType = {
 }
 
 export function generateDestroy(dataType: string) {
-  return (requestKey: string, params: DestroyParamsType, options?: OptionsType) => ({
+  return (requestKey: string, params: DestroyParamsType, options?: RequestActionOptionsType) => ({
     type: REQUEST_START,
     method: 'destroy',
-    requestKey, dataType, params, options
+    requestKey,
+    dataType,
+    params,
+    options
   })
 }
-

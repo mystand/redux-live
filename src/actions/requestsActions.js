@@ -1,11 +1,29 @@
 // @flow
 import type { HashType } from '../types'
-import type { OptionsType } from '../reducers/requestsReducer'
+
+export type RequestActionOptionMergeType = 'replace' | 'append'
+export type RequestActionOptionSubscribeType = {
+  model: string,
+  condition?: string,
+  comparator?: Function
+}
+export type RequestActionOptionsType = {
+  merge?: RequestActionOptionMergeType,
+  subscribe?: RequestActionOptionSubscribeType
+}
 
 export type RequestStartActionType = {
   type: 'REQUEST_START',
   requestKey: string,
-  params?: HashType
+  params?: HashType,
+  options?: RequestActionOptionsType
+}
+
+export type RequestSuccessActionType<D> = {
+  type: 'REQUEST_SUCCESS',
+  requestKey: string,
+  data: D,
+  options?: RequestActionOptionsType
 }
 
 export const REQUEST_START = 'REQUEST_START'
@@ -15,7 +33,7 @@ export const REQUEST_FAILURE = 'REQUEST_FAILURE'
 export const REQUEST_CLEAR = 'REQUEST_CLEAR'
 export const REQUEST_SUBSCRIPTION_ACTION = 'REQUEST_SUBSCRIPTION_ACTION'
 
-export const success = (requestKey: string, data: any, options: OptionsType) => ({
+export const success = (requestKey: string, data: any, options: RequestActionOptionsType) => ({
   type: REQUEST_SUCCESS, requestKey, data, options
 })
 

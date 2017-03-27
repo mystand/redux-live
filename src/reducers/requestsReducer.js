@@ -1,8 +1,9 @@
 // @flow
 import R from 'ramda'
 
-import type { HashType, ActionType } from '../types'
-import {
+import type { ActionType } from '../types'
+import type { RequestActionOptionMergeType } from '../actions/requestsActions'
+import { // eslint-disable-line no-duplicate-imports
   REQUEST_START,
   REQUEST_SUCCESS,
   REQUEST_ERROR,
@@ -19,16 +20,9 @@ export type RequestResultType<T> = {
 }
 export type RequestsReducerStateType = { [key: string]: RequestResultType<any> }
 
-export type OptionsMergeType = 'replace' | 'append'
-export type OptionsSubscribeType = { model: string, params: HashType }
-export type OptionsType = {
-  merge?: OptionsMergeType,
-  subscribe?: OptionsSubscribeType
-}
-
 const defaultState: RequestsReducerStateType = {}
 
-function mergeData(oldData: any, newData: any, type: OptionsMergeType = 'replace') {
+function mergeData(oldData: any, newData: any, type: RequestActionOptionMergeType = 'replace') {
   if (type === 'replace') return newData
   if (type === 'append') {
     if (oldData == null) return newData
@@ -106,10 +100,10 @@ export default function<A: ActionType> (
       let fn = null
 
       if (sAction === 'create') fn = (data: []) => [...data, object]
-      if (sAction === 'destroy') fn = (data: []) => data.filter(x => x.id != object.id)
+      if (sAction === 'destroy') fn = (data: []) => data.filter(x => x.id !== object.id)
       if (sAction === 'update') {
         fn = (data: []) => {
-          const index = R.findIndex(x => x.id == object.id, data)
+          const index = R.findIndex(x => x.id === object.id, data)
           if (index === -1) return [...data, object]
           return R.update(index, object, data)
         }

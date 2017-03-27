@@ -4,23 +4,16 @@ import React from 'react'
 import R from 'ramda'
 import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
-import pluralize from 'pluralize'
 
 import type { HashType, ActionType } from '../types'
 import type { RequestStartActionType } from '../actions/requestsActions'
 import * as requestsActions from '../actions/requestsActions'
 import guid from '../lib/guid'
 
-export type SubscribeOptionsType = {
-  model: string,
-  params: HashType
-}
-
 export type RequestDeclarationItemType<S> = {
   key: string,
   action: (props: HashType, state: ?S) => ActionType,
-  cacheKey?: (props: HashType, state: ?S) => string,
-  subscribe?: boolean
+  cacheKey?: (props: HashType, state: ?S) => string
 }
 
 export type RequestsDeclarationType<S> = Array<RequestDeclarationItemType<S>>
@@ -118,25 +111,14 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
         const { dispatch } = this.connectComponent.store
 
         requestsDeclaration.forEach((request) => {
-          const { key, action: actionCreator, cacheKey: cacheKeyFn, subscribe } = request
+          const { key, action: actionCreator, cacheKey: cacheKeyFn } = request
           const previousCacheKey = this._requestsCacheKeys[key]
           const cacheKey = cacheKeyFn ? cacheKeyFn(props, state) : null
 
           if (previousCacheKey !== cacheKey) {
             const requestKey = `${this._requestsPrefix}-${key}`
             this._requestsCacheKeys[key] = cacheKey
-
-            let action = { ...actionCreator(props, state), requestKey }
-            if (subscribe) {
-              action = {
-                ...action,
-                options: {
-                  ...action.options,
-                  subscribe: { params: action.params, model: pluralize(action.dataType, 1) }
-                }
-              }
-            }
-            dispatch(action)
+            dispatch({ ...actionCreator(props, state), requestKey })
           }
         })
       }
