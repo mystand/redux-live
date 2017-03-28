@@ -29,18 +29,25 @@ type ObjectType = { [key: string]: any, id: number }
 
 const defaultState: RequestsReducerStateType = {}
 
-function mergeData(
-  oldData: any,
-  newData: any,
+function mergeData<D>(
+  oldData: D,
+  newData: D,
   type: RequestActionOptionMergeType = 'replace',
   comparator?: RequestOptionComparatorType
 ) {
-  if (type === 'replace') return comparator == null ? newData : R.sort(comparator, newData)
-  if (type === 'append') {
+  const mergedData = _mergeData(oldData, newData, type)
+  return comparator == null ? mergedData : R.sort(comparator, mergedData)
+}
+
+function _mergeData<D>(oldData: D, newData: D, type: RequestActionOptionMergeType) {
+  if (type === 'replace') return newData
+  else if (type === 'append') {
     if (oldData == null) return newData
     if (newData == null) return oldData
     if (oldData instanceof Array && newData instanceof Array) return [...oldData, ...newData]
     throw new Error(`Unacceptable data types: ${oldData.constructor.name} and ${newData.constructor.name}`)
+  } else {
+    throw new Error(`Unacceptable merge type: ${type}`)
   }
 }
 
