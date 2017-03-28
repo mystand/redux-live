@@ -31,17 +31,24 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
       const { model, condition } = options.subscribe
       const { comparator } = options
 
-      subscriptions[requestKey] = new Subscription(model, condition, (sAction, object) => {
+      const subscription = new Subscription(model, condition, (sAction, object) => {
         dispatch(requestsActions.subscriptionAction(requestKey, sAction, object, { comparator }))
       })
-      subscriptions[requestKey].open()
+
+      if (!subscription.isEqual(subscriptions[requestKey])) {
+        clearSubscriptionIfNeeded({ requestKey })
+        subscriptions[requestKey] = subscription
+        subscriptions[requestKey].open()
+      }
     }
   }
 
   function clearSubscriptionIfNeeded(action) {
     const { requestKey } = action
-    subscriptions[requestKey].close()
-    delete subscriptions[requestKey]
+    if (subscriptions[requestKey] != null) {
+      subscriptions[requestKey].close()
+      delete subscriptions[requestKey]
+    }
   }
 
   return function * requestSaga(): Generator<*, *, *> {

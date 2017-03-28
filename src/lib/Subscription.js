@@ -67,6 +67,11 @@ class Subscription {
   close() {
     if (_webSocket != null) _webSocket.send(Command.unSubscribe(this._guid))
   }
+
+  isEqual(subscription: Subscription) {
+    if (subscription == null) return false
+    return this._model === subscription._model && this._condition === subscription._condition
+  }
 }
 
 export default Subscription

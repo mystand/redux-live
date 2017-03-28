@@ -29,7 +29,7 @@ type ObjectType = { [key: string]: any, id: number }
 
 const defaultState: RequestsReducerStateType = {}
 
-function mergeData<D>(
+function mergeData<D: Object>(
   oldData: D,
   newData: D,
   type: RequestActionOptionMergeType = 'replace',
@@ -39,7 +39,7 @@ function mergeData<D>(
   return comparator == null ? mergedData : R.sort(comparator, mergedData)
 }
 
-function _mergeData<D>(oldData: D, newData: D, type: RequestActionOptionMergeType) {
+function _mergeData<D: Object>(oldData: D, newData: D, type: RequestActionOptionMergeType) {
   if (type === 'replace') return newData
   else if (type === 'append') {
     if (oldData == null) return newData
