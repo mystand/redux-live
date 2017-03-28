@@ -125,8 +125,12 @@ export default function<A: ActionType> (
       }
 
       if (fn != null) {
-        const newState = updatePath([requestKey, 'data'], fn, state)
-        return comparator == null ? newState : R.sort(comparator, newState)
+        if (comparator != null) {
+          const fnOld = fn
+          fn = (data: []) => R.sort(comparator, fnOld(data))
+        }
+
+        return updatePath([requestKey, 'data'], fn, state)
       }
       console.warn(`unrecognized subscribe action '${sAction}'`)
       return state
