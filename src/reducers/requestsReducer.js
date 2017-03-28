@@ -2,7 +2,12 @@
 import R from 'ramda'
 
 import type { ActionType } from '../types'
-import type { RequestActionOptionMergeType } from '../actions/requestsActions'
+import type {
+  RequestSuccessActionType,
+  RequestActionOptionMergeType,
+  RequestOptionComparatorType,
+  RequestSubscriptionActionType
+} from '../actions/requestsActions'
 import { // eslint-disable-line no-duplicate-imports
   REQUEST_START,
   REQUEST_SUCCESS,
@@ -20,10 +25,17 @@ export type RequestResultType<T> = {
 }
 export type RequestsReducerStateType = { [key: string]: RequestResultType<any> }
 
+type ObjectType = { [key: string]: any, id: number }
+
 const defaultState: RequestsReducerStateType = {}
 
-function mergeData(oldData: any, newData: any, type: RequestActionOptionMergeType = 'replace') {
-  if (type === 'replace') return newData
+function mergeData(
+  oldData: any,
+  newData: any,
+  type: RequestActionOptionMergeType = 'replace',
+  comparator?: RequestOptionComparatorType
+) {
+  if (type === 'replace') return comparator == null ? newData : R.sort(comparator, newData)
   if (type === 'append') {
     if (oldData == null) return newData
     if (newData == null) return oldData
@@ -55,13 +67,13 @@ export default function<A: ActionType> (
       }
 
     case REQUEST_SUCCESS: {
-      const { data, options: { merge } = {} } = action
+      const { data, options: { merge, comparator } = {} } = (action: RequestSuccessActionType<any>)
       return {
         ...state,
         [requestKey]: {
           ...state[requestKey],
           loading: false,
-          data: mergeData(state[requestKey].data, data, merge),
+          data: mergeData(state[requestKey].data, data, merge, comparator),
           dataError: null
         }
       }
@@ -96,7 +108,10 @@ export default function<A: ActionType> (
     }
 
     case REQUEST_SUBSCRIPTION_ACTION: {
-      const { requestKey, action: sAction, object } = action
+      const { requestKey, options: { comparator } } = (action: RequestSubscriptionActionType<ObjectType>)
+      const object: ObjectType = action.object
+      const sAction: string = action.action
+
       let fn = null
 
       if (sAction === 'create') fn = (data: []) => [...data, object]
@@ -109,7 +124,14 @@ export default function<A: ActionType> (
         }
       }
 
-      if (fn != null) return updatePath([requestKey, 'data'], fn, state)
+      if (fn != null) {
+        if (comparator != null) {
+          const fnOld = fn
+          fn = (data: []) => R.sort(comparator, fnOld(data))
+        }
+
+        return updatePath([requestKey, 'data'], fn, state)
+      }
       console.warn(`unrecognized subscribe action '${sAction}'`)
       return state
     }
