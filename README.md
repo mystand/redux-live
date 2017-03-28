@@ -173,3 +173,20 @@ export default connectWithRequests([
   }
 ])(ProjectSupportPage)
 ```
+
+#### Ordering 
+
+It correctly works with subscriptions
+
+```flow js
+export default connectWithRequests([
+  {
+    key: 'issues',
+    cacheKey: (props: PropsType) => props.orderField,
+    action: (props: PropsType) => issuesActions.index(null, {}, {
+      comparator: (a, b) => a[props.orderField] - b[props.orderField],
+      subscribe: { model: 'Issue' }
+    })
+  }
+])(IssuesPage)
+```
