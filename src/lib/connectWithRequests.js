@@ -110,7 +110,7 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
 
         requestsDeclaration.forEach((request) => {
           const { key, action: actionCreator, cacheKey: cacheKeyFn } = request
-          const previousCacheKey = this._requestsCacheKeys[key]
+          const previousCacheKey = this._requestsCacheKeys[key] || null
           const cacheKey = cacheKeyFn ? cacheKeyFn(props, state) : null
 
           if (previousCacheKey !== cacheKey) {
