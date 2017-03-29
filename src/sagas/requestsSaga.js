@@ -1,5 +1,5 @@
 // @flow
-import { call, put, takeLatest } from 'redux-saga/effects'
+import { call, put, takeEvery } from 'redux-saga/effects'
 
 import type { RequestSuccessActionType } from '../actions/requestsActions'
 import * as requestsActions from '../actions/requestsActions' // eslint-disable-line no-duplicate-imports
@@ -52,8 +52,8 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
   }
 
   return function * requestSaga(): Generator<*, *, *> {
-    yield takeLatest(requestsActions.REQUEST_START, start)
-    yield takeLatest(requestsActions.REQUEST_SUCCESS, createSubscriptionIfNeeded)
-    yield takeLatest(requestsActions.REQUEST_CLEAR, clearSubscriptionIfNeeded)
+    yield takeEvery(requestsActions.REQUEST_START, start)
+    yield takeEvery(requestsActions.REQUEST_SUCCESS, createSubscriptionIfNeeded)
+    yield takeEvery(requestsActions.REQUEST_CLEAR, clearSubscriptionIfNeeded)
   }
 }
