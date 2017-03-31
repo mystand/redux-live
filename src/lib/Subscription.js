@@ -4,10 +4,7 @@ import guid from '../lib/guid'
 type ActionType = 'create' | 'update' | 'destroy'
 type CallbackType = (action: ActionType, object: any) => void
 
-let onConnect = null
-let waitForConnect = new Promise((resolve, reject) => {
-  onConnect = resolve
-})
+let waitForConnect = new Promise(() => {})
 
 const Command = {
   subscribe: (guid: string, model: string, condition: ?string) => JSON.stringify({
@@ -30,7 +27,9 @@ class Subscription {
     Subscription._disconnectIfOpen()
     _webSocket = new WebSocket(url, protocol)
     _webSocket.onmessage = Subscription._onMessage
-    _webSocket.onopen = onConnect
+    waitForConnect = new Promise((resolve, reject) => {
+      _webSocket.onopen = resolve
+    })
   }
 
   static _onMessage(e: MessageEvent) {
