@@ -63,19 +63,21 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
         const wrappedComponent = this.connectComponent.getWrappedInstance()
 
         if (wrappedComponent == null) {
-          // wrapped component is function
+          // wrapped component is a function
           const oldWillUpdate = this.connectComponent.componentWillUpdate
           // $FlowIgnore
+          const { selector } = this.connectComponent
+          // $FlowIgnore
           this.connectComponent.componentWillUpdate = (nextProps, nextState) => {
-            this._performRequestsIfNeeded(nextProps, null)
+            this._performRequestsIfNeeded(selector.props, null)
             if (oldWillUpdate !== undefined) {
               oldWillUpdate.call(this.connectComponent, nextProps, nextState)
             }
           }
-          this._performRequestsIfNeeded(this.props, null)
+          this._performRequestsIfNeeded(selector.props, null)
 
         } else {
-          // wrapped component is class
+          // wrapped component is a class
           const oldWillUpdate = wrappedComponent.componentWillUpdate
           // $FlowIgnore
           wrappedComponent.componentWillUpdate = (nextProps, nextState) => {
@@ -86,7 +88,7 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
           }
           // $FlowIgnore flow bug
           const state: S = wrappedComponent.state
-          this._performRequestsIfNeeded(this.props, state)
+          this._performRequestsIfNeeded(wrappedComponent.props, state)
         }
       }
 
