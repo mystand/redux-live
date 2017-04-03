@@ -62,7 +62,7 @@ const updatePath = R.curry((path, fn, object) => {
   return R.assocPath(path, value, object)
 })
 
-export default function<A: ActionType> (
+export default function <A: ActionType>(
   state: RequestsReducerStateType = defaultState,
   action: A
 ): RequestsReducerStateType {
@@ -80,7 +80,9 @@ export default function<A: ActionType> (
       }
 
     case REQUEST_SUCCESS: {
+      if (state[requestKey] == null) return state
       const { data, options: { merge, comparator } = {} } = (action: RequestSuccessActionType<any>)
+
       return {
         ...state,
         [requestKey]: {
@@ -93,7 +95,9 @@ export default function<A: ActionType> (
     }
 
     case REQUEST_ERROR: {
+      if (state[requestKey] == null) return state
       const { data } = action
+
       return {
         ...state,
         [requestKey]: {
@@ -105,7 +109,9 @@ export default function<A: ActionType> (
     }
 
     case REQUEST_FAILURE: {
+      if (state[requestKey] == null) return state
       const { error } = action
+
       return {
         ...state,
         [requestKey]: {
@@ -122,6 +128,7 @@ export default function<A: ActionType> (
 
     case REQUEST_SUBSCRIPTION_ACTION: {
       const { requestKey, options: { comparator } } = (action: RequestSubscriptionActionType<ObjectType>)
+      if (state[requestKey] == null) return state
       const object: ObjectType = action.object
       const sAction: string = action.action
 
