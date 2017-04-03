@@ -28,6 +28,12 @@ export type RequestsReducerStateType = { [key: string]: RequestResultType<any> }
 type ObjectType = { [key: string]: any, id: number }
 
 const defaultState: RequestsReducerStateType = {}
+export const defaultResult: RequestResultType<any> = {
+  data: undefined,
+  failureError: null,
+  dataError: null,
+  loading: false
+}
 
 function mergeData<D: Object>(
   oldData: D,

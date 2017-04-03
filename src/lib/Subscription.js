@@ -1,8 +1,8 @@
 // @flow
 import guid from '../lib/guid'
 
-type ActionType = 'create' | 'update' | 'destroy'
-type CallbackType = (action: ActionType, object: any) => void
+export type ActionType = 'create' | 'update' | 'destroy'
+export type CallbackType = (action: ActionType, object: any) => void
 
 const Command = {
   subscribe: (guid: string, model: string, condition: ?string) => JSON.stringify({

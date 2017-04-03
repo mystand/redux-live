@@ -2,8 +2,9 @@
 import { call, put, takeEvery } from 'redux-saga/effects'
 
 import type { RequestSuccessActionType } from '../actions/requestsActions'
+import type { ActionType } from '../lib/Subscription'
 import * as requestsActions from '../actions/requestsActions' // eslint-disable-line no-duplicate-imports
-import Subscription from '../lib/Subscription'
+import Subscription from '../lib/Subscription' // eslint-disable-line no-duplicate-imports
 
 const subscriptions: { [key: string]: Subscription } = {}
 
@@ -31,7 +32,7 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
       const { model, condition } = options.subscribe
       const { comparator } = options
 
-      const subscription = new Subscription(model, condition, (sAction, object) => {
+      const subscription = new Subscription(model, condition, (sAction: ActionType, object: any) => {
         dispatch(requestsActions.subscriptionAction(requestKey, sAction, object, { comparator }))
       })
 

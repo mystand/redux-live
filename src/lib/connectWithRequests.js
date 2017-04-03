@@ -4,11 +4,13 @@ import React from 'react'
 import R from 'ramda'
 import { connect } from 'react-redux'
 import { autobind } from 'core-decorators'
+import { createSelector } from 'reselect'
 
 import type { HashType, ActionType } from '../types'
 import type { RequestStartActionType } from '../actions/requestsActions'
 import * as requestsActions from '../actions/requestsActions'
 import guid from '../lib/guid'
+import { defaultResult } from '../reducers/requestsReducer'
 
 export type RequestDeclarationItemType<S> = {
   key: string,
@@ -18,25 +20,32 @@ export type RequestDeclarationItemType<S> = {
 
 export type RequestsDeclarationType<S> = Array<RequestDeclarationItemType<S>>
 
+const EMPTY_OBJECT = {}
+
 export default function connectWithRequests<S>(
   requestsDeclaration: RequestsDeclarationType<S>,
-  mapStateToProps?: Function,
+  mapStateToProps?: Function = () => (EMPTY_OBJECT),
   mapDispatchToProps?: Function,
   mergeProps?: Function,
   options?: HashType = {}
 ) {
   return (Component: React$Element<any>) => {
+    const resultSelectors = requestsDeclaration.map(request =>
+      (state, props) => state.requests[`${props._requestsPrefix}-${request.key}`] || defaultResult
+    )
+
+    const mapStateToPropsSelector = createSelector(mapStateToProps, ...resultSelectors, (props, ...results) => {
+      const result = { ...props }
+      for (let i = 0; i < results.length; ++i) {
+        result[`${requestsDeclaration[i].key}Result`] = results[i]
+      }
+      return result
+    })
+
     return R.compose(
       withRequests(requestsDeclaration),
-
       // $FlowIgnore todo
-      connect((state, props) => {
-        const result = mapStateToProps !== undefined ? mapStateToProps(state, props) : {}
-        requestsDeclaration.forEach((request) => {
-          result[`${request.key}Result`] = state.requests[`${props._requestsPrefix}-${request.key}`]
-        })
-        return result
-      }, mapDispatchToProps, mergeProps, { withRef: true, ...options })
+      connect(mapStateToPropsSelector, mapDispatchToProps, mergeProps, { withRef: true, ...options })
     )(Component)
   }
 }

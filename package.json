@@ -13,7 +13,8 @@
   "license": "",
   "dependencies": {
     "core-decorators": "^0.15.0",
-    "ramda": "^0.23.0"
+    "ramda": "^0.23.0",
+    "reselect": "^3.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
