@@ -6,7 +6,7 @@ npm install --save https://bitbucket.org/mystand/mystand-redux-requests.git
 
 #### Install saga
 
-```ecmascript 6
+```ecmascript6
 // After store initialization
 sagaMiddleware.run(rootSaga, store.dispatch)
 
@@ -23,11 +23,11 @@ export default function *rootSaga(dispatch) {
     requestsSaga()
   ]
 }
-```
 
+```
 #### Install reducer
 
-```ecmascript 6
+```ecmascript6
 import { combineReducers } from 'redux'
 import { requestsReducer } from 'mystand-redux-requests'
 
@@ -36,13 +36,14 @@ const reducers = {
   requests: formReducer     // <---- Mounted at 'requests'
 }
 const reducer = combineReducers(reducers)
+
 ```
 
 ## Usage
 
 #### Create actions
 
-```ecmascript 6
+```ecmascript6
 // actions/actsActions
 
 import { requestsActionsHelper } from 'mystand-redux-requests'
@@ -56,7 +57,7 @@ export const create = generateCreate('acts') // calls Api.acts.create method(par
 
 #### Connect to component
 
-```flow js
+```flowjs
 type RequestResultType<T> = {
   data: T,
   failureError: any,
@@ -91,7 +92,7 @@ export default connectWithRequests([
 
 #### Dispatch one action
 
-```flow js
+```flowjs
 // actions/issuesActions
 
 import { requestsActionsHelper } from 'mystand-redux-requests'
@@ -100,7 +101,7 @@ const { generateCreate } = requestsActionsHelper
 export const create = generateCreate('acts') // calls Api.acts.create method
 ```
 
-```flow js
+```flowjs
 import * as issuesActions from 'actions/issuesActions'
 
 const CreateIssueModal = (props: PropsType) => {
@@ -125,7 +126,8 @@ export default R.compose(
 
 #### Customize api method name in action creator
  
- ```flow js
+```flowjs
+
  import { requestsActions } from 'mystand-redux-requests'
  
  // this methos calls Api.project.dashboard(params)
@@ -136,13 +138,14 @@ export default R.compose(
    dataType: 'project',
    requestKey, params, options
 })
+
 ```
 
 #### Infinity scroll 
 
 There are two merge option values. `replace` (by default) and `append` (`append` for arrays only)
 
-```flow js
+```flowjs
 export default connectWithRequests([
   {
     key: 'messages',
@@ -153,13 +156,14 @@ export default connectWithRequests([
     }
   }
 ])(ProjectIssuePage)
+
 ```
 
 #### Subscriptions 
 
 You can white condition using syntax provided by [JEXT](https://www.npmjs.com/package/jexl) 
 
-```flow js
+```flowjs
 export default connectWithRequests([
   {
     key: 'issues',
@@ -178,7 +182,7 @@ export default connectWithRequests([
 
 It correctly works with subscriptions
 
-```flow js
+```flowjs
 export default connectWithRequests([
   {
     key: 'issues',
