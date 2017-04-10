@@ -54,12 +54,12 @@ export const success = <D>(
   type: REQUEST_SUCCESS, requestKey, data, options
 })
 
-export const error = (requestKey: string, data: any, status: number) => ({
-  type: REQUEST_ERROR, requestKey, data, status
+export const error = (requestKey: string, data: any, status: number, options: RequestActionOptionsType) => ({
+  type: REQUEST_ERROR, requestKey, data, status, options
 })
 
-export const failure = (requestKey: string, error: Error) => ({
-  type: REQUEST_FAILURE, requestKey, error
+export const failure = (requestKey: string, error: Error, options: RequestActionOptionsType) => ({
+  type: REQUEST_FAILURE, requestKey, error, options
 })
 
 export const clear = (requestKey: string) => ({

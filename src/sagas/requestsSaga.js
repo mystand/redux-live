@@ -16,12 +16,12 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
       const { response: { status }, data } = yield call(Api[dataType][method], params)
       const codeStart = Math.floor(status / 100)
       if (codeStart === 4 || codeStart === 5) {
-        yield put(requestsActions.error(requestKey, data, status))
+        yield put(requestsActions.error(requestKey, data, status, options))
       } else {
         yield put(requestsActions.success(requestKey, data, options))
       }
     } catch (e) {
-      yield put(requestsActions.failure(requestKey, e))
+      yield put(requestsActions.failure(requestKey, e, options))
     }
   }
 
