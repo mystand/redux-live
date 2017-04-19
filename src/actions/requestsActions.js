@@ -48,10 +48,12 @@ export const REQUEST_SUBSCRIPTION_ACTION = 'REQUEST_SUBSCRIPTION_ACTION'
 
 export const success = <D>(
   requestKey: string,
+  dataType: string,
+  method: string,
   data: D,
   options: RequestActionOptionsType
 ): RequestSuccessActionType<D> => ({
-  type: REQUEST_SUCCESS, requestKey, data, options
+  type: REQUEST_SUCCESS, requestKey, dataType, method, data, options
 })
 
 export const error = (requestKey: string, data: any, status: number, options: RequestActionOptionsType) => ({
@@ -68,9 +70,10 @@ export const clear = (requestKey: string) => ({
 
 export const subscriptionAction = <O>(
   requestKey: string,
+  dataType: string,
   action: SubscriptionActionType,
   object: O,
   options: RequestSubscriptionActionOptionsType
 ): RequestSubscriptionActionType<O> => ({
-  type: REQUEST_SUBSCRIPTION_ACTION, requestKey, action, object, options
+  type: REQUEST_SUBSCRIPTION_ACTION, requestKey, dataType, action, object, options
 })

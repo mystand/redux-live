@@ -18,7 +18,7 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
       if (codeStart === 4 || codeStart === 5) {
         yield put(requestsActions.error(requestKey, data, status, options))
       } else {
-        yield put(requestsActions.success(requestKey, data, options))
+        yield put(requestsActions.success(requestKey, dataType, method, data, options))
       }
     } catch (e) {
       yield put(requestsActions.failure(requestKey, e, options))
@@ -26,14 +26,14 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
   }
 
   function createSubscriptionIfNeeded(action: RequestSuccessActionType<any>) {
-    const { requestKey, options } = action
+    const { requestKey, dataType, options } = action
 
     if (options != null && options.subscribe != null) {
       const { model, condition } = options.subscribe
       const { comparator } = options
 
       const subscription = new Subscription(model, condition, (sAction: ActionType, object: any) => {
-        dispatch(requestsActions.subscriptionAction(requestKey, sAction, object, { comparator }))
+        dispatch(requestsActions.subscriptionAction(requestKey, dataType, sAction, object, { comparator }))
       })
 
       if (!subscription.isEqual(subscriptions[requestKey])) {
