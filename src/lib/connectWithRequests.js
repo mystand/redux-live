@@ -75,15 +75,15 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
           // wrapped component is a function
           const oldWillUpdate = this.connectComponent.componentWillUpdate
           // $FlowIgnore
-          const { selector } = this.connectComponent
+          const { selector: { props } } = this.connectComponent
           // $FlowIgnore
           this.connectComponent.componentWillUpdate = (nextProps, nextState) => {
-            this._performRequestsIfNeeded(selector.props, null)
-            if (oldWillUpdate !== undefined) {
+            this._performRequestsIfNeeded(props, null)
+            if (oldWillUpdate != null) {
               oldWillUpdate.call(this.connectComponent, nextProps, nextState)
             }
           }
-          this._performRequestsIfNeeded(selector.props, null)
+          this._performRequestsIfNeeded(props, null)
 
         } else {
           // wrapped component is a class
@@ -91,7 +91,7 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
           // $FlowIgnore
           wrappedComponent.componentWillUpdate = (nextProps, nextState) => {
             this._performRequestsIfNeeded(nextProps, nextState)
-            if (oldWillUpdate !== undefined) {
+            if (oldWillUpdate != null) {
               oldWillUpdate.call(wrappedComponent, nextProps, nextState)
             }
           }
@@ -147,12 +147,35 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
         dispatch({ ...action, requestKey: fullKey })
       }
 
+      @autobind
+      performRequest(requestKey: string) {
+        // $FlowIgnore
+        const request = requestsDeclaration.find(x => x.key === requestKey)
+        if (request) {
+          const { key, action: actionCreator } = request
+          const { dispatch } = this.connectComponent.store
+          const requestKey = `${this._requestsPrefix}-${key}`
+          const wrappedComponent = this.connectComponent.getWrappedInstance()
+
+          if (wrappedComponent != null) {
+            const { props, state } = wrappedComponent
+            dispatch({ ...actionCreator(props, state), requestKey })
+          } else {
+            const props = this.connectComponent.selector.props
+            dispatch({ ...actionCreator(props, null), requestKey })
+          }
+        } else {
+          console.error(`Undefined request key '${requestKey}'`)
+        }
+      }
+
       render() {
         return (
           <Component
             {...this.props}
             ref={this.connectRef}
             dispatchRequest={this.dispatchRequest}
+            performRequest={this.performRequest}
             _requestsPrefix={this._requestsPrefix}
           />
         )
