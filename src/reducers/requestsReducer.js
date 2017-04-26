@@ -128,7 +128,7 @@ export default function <A: ActionType>(
 
     case REQUEST_SUBSCRIPTION_ACTION: {
       const { requestKey, options: { comparator } } = (action: RequestSubscriptionActionType<ObjectType>)
-      if (state[requestKey] == null) return state
+      if (state[requestKey] == null) { return state }
       const object: ObjectType = action.object
       const sAction: string = action.action
 
@@ -137,8 +137,12 @@ export default function <A: ActionType>(
       if (sAction === 'create') fn = (data: []) => [...data, object]
       if (sAction === 'destroy') fn = (data: []) => data.filter(x => x.id !== object.id)
       if (sAction === 'update') {
-        fn = (data: []) => {
+        fn = (data: [] | {}) => {
+          if (data.id) {
+            return object
+          }
           const index = R.findIndex(x => x.id === object.id, data)
+          // $FlowIgnore
           if (index === -1) return [...data, object]
           return R.update(index, object, data)
         }
