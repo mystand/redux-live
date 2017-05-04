@@ -78,7 +78,7 @@ function withRequests<S>(requestsDeclaration: RequestsDeclarationType<S>) {
           const { selector: { props } } = this.connectComponent
           // $FlowIgnore
           this.connectComponent.componentWillUpdate = (nextProps, nextState) => {
-            this._performRequestsIfNeeded(props, null)
+            this._performRequestsIfNeeded(nextProps, null)
             if (oldWillUpdate != null) {
               oldWillUpdate.call(this.connectComponent, nextProps, nextState)
             }
