@@ -7,10 +7,14 @@ export type CallbackType = (action: ActionType, object: any) => void
 let waitForConnect = new Promise(() => {})
 
 const Command = {
-  subscribe: (guid: string, model: string, condition: ?string) => JSON.stringify({
-    command: 'subscribe',
-    args: { model, condition, guid }
-  }),
+  subscribe: (guid: string,
+    model: string,
+    condition: ?string,
+    getUrlOptions: ?Object) => JSON.stringify({
+      command: 'subscribe',
+      args: { model, condition, guid, getUrlOptions}
+    })
+  ,
 
   unSubscribe: (guid: string) => JSON.stringify({ command: 'unSubscribe', args: { guid } })
 }
@@ -22,6 +26,7 @@ class Subscription {
   _guid: string
   _model: string
   _condition: ?string
+  _getUrlOptions: ?Object
 
   static connect(url, protocol) {
     Subscription._disconnectIfOpen()
@@ -54,17 +59,18 @@ class Subscription {
     }
   }
 
-  constructor(model: string, condition: ?string, callback: CallbackType) {
+  constructor(model: string, condition: ?string, getUrlOptions: ?Object, callback: CallbackType) {
     this._guid = guid()
     this._model = model
     this._condition = condition
+    this._getUrlOptions = getUrlOptions
     _callbacks[this._guid] = callback
   }
 
   open() {
     if (_webSocket != null) {
       waitForConnect.then(() => {
-        _webSocket.send(Command.subscribe(this._guid, this._model, this._condition))
+        _webSocket.send(Command.subscribe(this._guid, this._model, this._condition, this._getUrlOptions))
       })
     } else {
       console.error('Connection not established')
@@ -77,7 +83,9 @@ class Subscription {
 
   isEqual(subscription: Subscription) {
     if (subscription == null) return false
-    return this._model === subscription._model && this._condition === subscription._condition
+    return this._model === subscription._model &&
+      this._condition === subscription._condition &&
+      this._getUrlOptions === this._getUrlOptions 
   }
 }
 

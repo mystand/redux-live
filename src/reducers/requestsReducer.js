@@ -62,7 +62,7 @@ const updatePath = R.curry((path, fn, object) => {
   return R.assocPath(path, value, object)
 })
 
-export default function <A: ActionType>(
+export default function <A: ActionType> (
   state: RequestsReducerStateType = defaultState,
   action: A
 ): RequestsReducerStateType {

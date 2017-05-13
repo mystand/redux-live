@@ -5,7 +5,8 @@ export type RequestActionOptionMergeType = 'replace' | 'append'
 export type RequestOptionComparatorType = <T>(a: T, b: T) => number
 export type RequestActionOptionSubscribeType = {
   model: string,
-  condition?: string
+  condition?: string,
+  getUrlOptions?: Object
 }
 export type RequestActionOptionsType = {
   merge?: RequestActionOptionMergeType,

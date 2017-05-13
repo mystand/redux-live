@@ -1,10 +1,9 @@
 // @flow
-import { call, put, takeEvery } from 'redux-saga/effects'
-
 import type { RequestSuccessActionType } from '../actions/requestsActions'
 import type { ActionType } from '../lib/Subscription'
 import * as requestsActions from '../actions/requestsActions' // eslint-disable-line no-duplicate-imports
 import Subscription from '../lib/Subscription' // eslint-disable-line no-duplicate-imports
+import { call, put, takeEvery } from 'redux-saga/effects'
 
 const subscriptions: { [key: string]: Subscription } = {}
 
@@ -29,13 +28,11 @@ export default function buildRequestsSaga(Api: any, dispatch: Function) { // tod
     const { requestKey, dataType, options } = action
 
     if (options != null && options.subscribe != null) {
-      const { model, condition } = options.subscribe
+      const { model, condition, getUrlOptions } = options.subscribe
       const { comparator } = options
-
-      const subscription = new Subscription(model, condition, (sAction: ActionType, object: any) => {
+      const subscription = new Subscription(model, condition, getUrlOptions, (sAction: ActionType, object: any) => {
         dispatch(requestsActions.subscriptionAction(requestKey, dataType, sAction, object, { comparator }))
       })
-
       if (!subscription.isEqual(subscriptions[requestKey])) {
         clearSubscriptionIfNeeded({ requestKey })
         subscriptions[requestKey] = subscription
