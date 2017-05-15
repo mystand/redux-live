@@ -85,7 +85,7 @@ class Subscription {
     if (subscription == null) return false
     return this._model === subscription._model &&
       this._condition === subscription._condition &&
-      this._getUrlOptions === this._getUrlOptions 
+      this._getUrlOptions === subscription._getUrlOptions 
   }
 }
 
