@@ -1,4 +1,4 @@
-## Instalation
+## Installation
 
 ```bash
 npm install --save https://github.com/mystand/redux-live.git
@@ -194,3 +194,27 @@ export default connectWithRequests([
   }
 ])(IssuesPage)
 ```
+
+#### Subscription query scoping
+
+If it needs you can use `getUrlOptions` parameter to custom your get/index subscription requests, this option fully supported by changes-notifier server.
+
+```flowjs
+export default connectWithRequests([
+  {
+    key: 'issues',
+    cacheKey: (props: PropsType) => props.orderField,
+    action: (props: PropsType) => issuesActions.index(null, {}, {
+      comparator: (a, b) => a[props.orderField] - b[props.orderField],
+      subscribe: { 
+        model: 'Issue', 
+        getUrlOptions: {
+          showHidden: true
+        }
+      }
+    })
+  }
+])(IssuesPage)
+```
+
+
