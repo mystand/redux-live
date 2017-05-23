@@ -1,7 +1,7 @@
 ## Installation
 
 ```bash
-npm install --save https://github.com/mystand/redux-live.git
+npm install --save redux_live
 ```
 
 #### Install saga
