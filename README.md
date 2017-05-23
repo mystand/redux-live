@@ -1,7 +1,7 @@
 ## Instalation
 
 ```bash
-npm install --save https://bitbucket.org/mystand/mystand-redux-requests.git
+npm install --save https://github.com/mystand/redux-live.git
 ```
 
 #### Install saga
@@ -12,7 +12,7 @@ sagaMiddleware.run(rootSaga, store.dispatch)
 
 
 // In root saga creation
-import { buildRequestsSaga } from 'mystand-redux-requests'
+import { buildRequestsSaga } from 'redux-live'
 import Api from 'path/to/api'
 
 export default function *rootSaga(dispatch) {
@@ -29,7 +29,7 @@ export default function *rootSaga(dispatch) {
 
 ```ecmascript6
 import { combineReducers } from 'redux'
-import { requestsReducer } from 'mystand-redux-requests'
+import { requestsReducer } from 'redux-live'
 
 const reducers = {
   // ... your other reducers here ...
@@ -46,7 +46,7 @@ const reducer = combineReducers(reducers)
 ```ecmascript6
 // actions/actsActions
 
-import { requestsActionsHelper } from 'mystand-redux-requests'
+import { requestsActionsHelper } from 'redux-live'
 
 const { generateIndex, generateGet, generateCreate } = requestsActionsHelper
 
@@ -95,7 +95,7 @@ export default connectWithRequests([
 ```flowjs
 // actions/issuesActions
 
-import { requestsActionsHelper } from 'mystand-redux-requests'
+import { requestsActionsHelper } from 'redux-live'
 const { generateCreate } = requestsActionsHelper
 
 export const create = generateCreate('acts') // calls Api.acts.create method
@@ -128,7 +128,7 @@ export default R.compose(
  
 ```flowjs
 
- import { requestsActions } from 'mystand-redux-requests'
+ import { requestsActions } from 'redux-live'
  
  // this methos calls Api.project.dashboard(params)
  // params will be same as params from action

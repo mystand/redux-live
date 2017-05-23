@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/mystand-redux-requests.iml" filepath="$PROJECT_DIR$/.idea/mystand-redux-requests.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/redux-live.iml" filepath="$PROJECT_DIR$/.idea/redux-live.iml" />
     </modules>
   </component>
 </project>
