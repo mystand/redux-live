@@ -1,7 +1,8 @@
 {
   "presets": [
     "env",
-    "stage-3",
+    "es2015",
+    "stage-0",
     "react"
   ],
   "plugins": [
@@ -11,7 +12,11 @@
   "env": {
     "development": {
       "plugins": [
-        "flow-react-proptypes"
+        "flow-react-proptypes",
+        ["transform-runtime", {
+          "polyfill": false,
+          "regenerator": true
+        }]
       ]
     }
   }

@@ -9,6 +9,7 @@
 /.idea/dbnavigator.xml
 /.idea/workspace.xml
 
+package-lock.json
 # system and other files
 .DS_Store
 npm-debug.log
