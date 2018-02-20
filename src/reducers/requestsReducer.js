@@ -88,8 +88,10 @@ export default function <A: ActionType> (
         [requestKey]: {
           ...state[requestKey],
           loading: false,
-          data: mergeData(state[requestKey].data, data, merge, comparator),
-          dataError: null
+          data: mergeData(state[requestKey].data, data.data, merge, comparator),
+          ...(data.included && { included: mergeData(state[requestKey].included, data.included, merge, comparator) }),
+          dataError: null,
+          ...R.omit('data', 'included', data)
         }
       }
     }
@@ -134,10 +136,10 @@ export default function <A: ActionType> (
 
       let fn = null
 
-      if (sAction === 'create') fn = (data: []) => [...data, object]
-      if (sAction === 'destroy') fn = (data: []) => data.filter(x => x.id !== object.id)
+      if (sAction === 'create') fn = (data: [], object) => [...data, object]
+      if (sAction === 'destroy') fn = (data: [], object) => data.filter(x => x.id !== object.id)
       if (sAction === 'update') {
-        fn = (data: [] | {}) => {
+        fn = (data: [] | {}, object) => {
           if (data.id) {
             return object
           }
@@ -151,10 +153,16 @@ export default function <A: ActionType> (
       if (fn != null) {
         if (comparator != null) {
           const fnOld = fn
-          fn = (data: []) => R.sort(comparator, fnOld(data))
+          fn = (object) => (data: []) => R.sort(comparator, fnOld(data, object))
         }
 
-        return updatePath([requestKey, 'data'], fn, state)
+        return ({ ...state,
+          [requestKey]: {
+            data: updatePath('data', fn(object.data), state[requestKey]),
+            included: updatePath('included', fn(object.included), state[requestKey]),
+            ...R.omit(['data', 'included'], object)
+          }
+        })
       }
       console.warn(`unrecognized subscribe action '${sAction}'`)
       return state
