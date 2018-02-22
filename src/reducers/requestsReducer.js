@@ -91,7 +91,7 @@ export default function <A: ActionType> (
           data: mergeData(state[requestKey].data, data.data, merge, comparator),
           ...(data.included && { included: mergeData(state[requestKey].included, data.included, merge, comparator) }),
           dataError: null,
-          ...R.omit('data', 'included', data)
+          ...R.omit(['data', 'included'], data)
         }
       }
     }
