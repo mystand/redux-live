@@ -85,6 +85,7 @@ const ActsPage = (props: PropsType) => {
 export default connectWithRequests([
   {
     key: 'acts',
+    cacheKey: () => 'acts',
     action: () => actsActions.index()
   }
 ])(ActsPage)
