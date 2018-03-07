@@ -133,13 +133,12 @@ export default function <A: ActionType> (
       if (state[requestKey] == null) { return state }
       const object: ObjectType = action.object
       const sAction: string = action.action
-
       let fn = null
 
-      if (sAction === 'create') fn = (data: [], object) => [...data, object]
-      if (sAction === 'destroy') fn = (data: [], object) => data.filter(x => x.id !== object.id)
+      if (sAction === 'create') fn = object => (data: []) => [...data, object]
+      if (sAction === 'destroy') fn = object => (data: []) => data.filter(x => x.id !== object.id)
       if (sAction === 'update') {
-        fn = (data: [] | {}, object) => {
+        fn = object => (data: [] | {}) => {
           if (data.id) {
             return object
           }
@@ -158,8 +157,8 @@ export default function <A: ActionType> (
 
         return ({ ...state,
           [requestKey]: {
-            data: updatePath('data', fn(object.data), state[requestKey]),
-            included: updatePath('included', fn(object.included), state[requestKey]),
+            data: updatePath(['data'], fn(object.data), state[requestKey]).data,
+          ...(object.included ? { included: object.included } : {}),
             ...R.omit(['data', 'included'], object)
           }
         })
