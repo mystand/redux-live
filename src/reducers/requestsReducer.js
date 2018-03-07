@@ -140,12 +140,14 @@ export default function <A: ActionType> (
       if (sAction === 'update') {
         fn = object => (data: [] | {}) => {
           if (data.id) {
-            return object
+            // override only existed fields, according to JSON API spec stored in attributes fields
+            return ({ ...object, attributes: { ...data.attributes, ...object }})
           }
           const index = R.findIndex(x => x.id === object.id, data)
           // $FlowIgnore
           if (index === -1) return [...data, object]
-          return R.update(index, object, data)
+          // same logic with collection update
+          return R.update(index, { ...object, attributes: { ...data[index].attributes }}, data)
         }
       }
 
@@ -157,9 +159,9 @@ export default function <A: ActionType> (
 
         return ({ ...state,
           [requestKey]: {
-            data: updatePath(['data'], fn(object.data), state[requestKey]).data,
-          ...(object.included ? { included: object.included } : {}),
-            ...R.omit(['data', 'included'], object)
+            ...object,
+            data: fn(object.data)(R.clone(state[requestKey].data)),
+          ...(object.included ? { included: object.included } : {})
           }
         })
       }
