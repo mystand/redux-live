@@ -89,7 +89,7 @@ export default function <A: ActionType> (
           ...state[requestKey],
           loading: false,
           data: mergeData(state[requestKey].data, data.data, merge, comparator),
-          ...(data.included && { included: mergeData(state[requestKey].included, data.included, merge, comparator) }),
+          included: mergeData(state[requestKey].included, data.included, merge, comparator),
           dataError: null,
           ...R.omit(['data', 'included'], data)
         }
@@ -133,35 +133,45 @@ export default function <A: ActionType> (
       if (state[requestKey] == null) { return state }
       const object: ObjectType = action.object
       const sAction: string = action.action
-      let fn = null
+      let updateData = null
+      let updateIncluded = (newIncluded, data, included: []) => included
 
-      if (sAction === 'create') fn = object => (data: []) => [...data, object]
-      if (sAction === 'destroy') fn = object => (data: []) => data.filter(x => x.id !== object.id)
+      if (sAction === 'create') updateData = (newData, data: []) => [...data, newData]
+      if (sAction === 'destroy') updateData = (newData, data: []) => data.filter(x => x.id !== newData.id)
       if (sAction === 'update') {
-        fn = object => (data: [] | {}) => {
+        updateData = (newData, data: [] | {}) => {
           if (data.id) {
             // override only existed fields, according to JSON API spec stored in attributes fields
-            return ({ ...object, attributes: { ...data.attributes, ...object }})
+            return ({ ...newData, attributes: { ...data.attributes, ...newData }})
           }
-          const index = R.findIndex(x => x.id === object.id, data)
+          const index = R.findIndex(x => x.id === newData.id, data)
           // $FlowIgnore
-          if (index === -1) return [...data, object]
+          if (index === -1) return [...data, newData]
           // same logic with collection update
-          return R.update(index, { ...object, attributes: { ...data[index].attributes }}, data)
+          return R.update(index, { ...newData, attributes: { ...data[index].attributes }}, data)
+        }
+        updateIncluded = (newIncluded, data, included: [] | {}) => {
+          if (data.id) {
+            // override only existed fields, according to JSON API spec stored in attributes fields
+            return newIncluded
+          }
+          return included
         }
       }
 
-      if (fn != null) {
+      if (updateData != null) {
         if (comparator != null) {
-          const fnOld = fn
-          fn = (object) => (data: []) => R.sort(comparator, fnOld(data, object))
+          const fnFroDataOld = updateData
+          const fnForIncludedOld = updateIncluded
+          updateData = (newData, data: []) => R.sort(comparator, fnFroDataOld(newData, data))
+          updateIncluded = (newIncluded, data, included: [] | {}) => R.sort(comparator, fnForIncludedOld(newIncluded, data, included))
         }
 
         return ({ ...state,
           [requestKey]: {
             ...object,
-            data: fn(object.data)(R.clone(state[requestKey].data)),
-          ...(object.included ? { included: object.included } : {})
+            data: updateData(object.data, R.clone(state[requestKey].data)),
+            included: updateIncluded(object.included, R.clone(state[requestKey].data), R.clone(state[requestKey].included))
           }
         })
       }
