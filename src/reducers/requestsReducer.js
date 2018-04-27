@@ -87,11 +87,11 @@ export default function <A: ActionType> (
         ...state,
         [requestKey]: {
           ...state[requestKey],
+          ...data,
           loading: false,
           data: mergeData(state[requestKey].data, data.data, merge, comparator),
           included: mergeData(state[requestKey].included, data.included || [], merge, comparator),
-          dataError: null,
-          ...R.omit(['data', 'included'], data)
+          dataError: null
         }
       }
     }

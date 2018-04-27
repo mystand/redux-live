@@ -57,8 +57,8 @@ export const success = <D>(
   type: REQUEST_SUCCESS, requestKey, dataType, method, data, options
 })
 
-export const error = (requestKey: string, data: any, status: number, options: RequestActionOptionsType) => ({
-  type: REQUEST_ERROR, requestKey, data, status, options
+export const error = (requestKey: string, data: any, status: number, options: RequestActionOptionsType, dataType, method, params) => ({
+  type: REQUEST_ERROR, requestKey, data, status, options, dataType, method, params
 })
 
 export const failure = (requestKey: string, error: Error, options: RequestActionOptionsType) => ({
