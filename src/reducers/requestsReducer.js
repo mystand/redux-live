@@ -135,10 +135,15 @@ export default function <A: ActionType> (
       const sAction: string = action.action
       let updateData = null
       let updateIncluded = (newIncluded, data, included: []) =>
-        R.dropRepeatsWith((x1, x2) => R.eqProps('id', x1, x2) && R.eqProps('type', x1, x2), [...newIncluded, ...included])
+        [...newIncluded, ...included].reduce((acc, record) => R.find(R.whereEq(R.pick(['id', 'type'], record)), acc) ?
+          acc : [...acc, record], [])
 
       if (sAction === 'create') updateData = (newData, data: []) => [...data, newData]
-      if (sAction === 'destroy') updateData = (newData, data: []) => data.filter(x => x.id !== newData.id)
+      if (sAction === 'destroy') {
+        updateData = (newData, data: []) => data.filter(x => x.id !== newData.id)
+        updateIncluded = (newIncluded, data, included: []) =>
+          newIncluded.filter(R.whereEq(R.pick(['id', 'type'], R.__))(included))
+      }
       if (sAction === 'update') {
         updateData = (newData, data: [] | {}) => {
           if (data.id) {
