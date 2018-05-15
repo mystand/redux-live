@@ -134,7 +134,8 @@ export default function <A: ActionType> (
       const object: ObjectType = action.object
       const sAction: string = action.action
       let updateData = null
-      let updateIncluded = (newIncluded, data, included: []) => included
+      let updateIncluded = (newIncluded, data, included: []) =>
+        R.dropRepeatsWith((x1, x2) => R.eqProps('id', x1, x2) && R.eqProps('type', x1, x2), [...newIncluded, ...included])
 
       if (sAction === 'create') updateData = (newData, data: []) => [...data, newData]
       if (sAction === 'destroy') updateData = (newData, data: []) => data.filter(x => x.id !== newData.id)
@@ -149,13 +150,6 @@ export default function <A: ActionType> (
           if (index === -1) return [...data, newData]
           // same logic with collection update
           return R.update(index, { ...newData, attributes: { ...data[index].attributes }}, data)
-        }
-        updateIncluded = (newIncluded, data, included: [] | {}) => {
-          if (data.id) {
-            // override only existed fields, according to JSON API spec stored in attributes fields
-            return newIncluded
-          }
-          return included
         }
       }
 
