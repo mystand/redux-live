@@ -140,9 +140,8 @@ export default function <A: ActionType> (
 
       if (sAction === 'create') updateData = (newData, data: []) => [...data, newData]
       if (sAction === 'destroy') {
-        updateData = (newData, data: []) => data.filter(x => x.id !== newData.id)
-        updateIncluded = (newIncluded, data, included: []) =>
-          newIncluded.filter(R.whereEq(R.pick(['id', 'type'], R.__))(included))
+        updateData = (newData, data: []) => data.filter(x => x.id != newData.id)
+        updateIncluded = (newIncluded, data, included: []) => included
       }
       if (sAction === 'update') {
         updateData = (newData, data: [] | {}) => {
@@ -150,7 +149,7 @@ export default function <A: ActionType> (
             // override only existed fields, according to JSON API spec stored in attributes fields
             return ({ ...newData, attributes: { ...data.attributes, ...newData }})
           }
-          const index = R.findIndex(x => x.id === newData.id, data)
+          const index = R.findIndex(x => x.id == newData.id, data)
           // $FlowIgnore
           if (index === -1) return [...data, newData]
           // same logic with collection update
