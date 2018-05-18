@@ -154,7 +154,7 @@ export default function <A: ActionType> (
           // $FlowIgnore
           if (index === -1) return [...data, newData]
           // same logic with collection update
-          return R.update(index, { ...newData, attributes: { ...data[index].attributes }}, data)
+          return R.update(index, { ...newData, attributes: { ...data[index].attributes, ...newData.attributes }}, data)
         }
       }
 
